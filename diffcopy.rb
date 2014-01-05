@@ -15,25 +15,48 @@ require 'pp'
 # ------------------------------------------------------------
 class DiffCopy
 	def initialize(argv)
-		@argv = argv
+		@args = Arguments.new(argv)
 	end
 	
 	def run
-		parse_args
+		@args.parse
+		if !@args.valid?
+			@args.print_usage
+			return
+		end
 		
-		patharr1 = PathArray.new(@indir1)
-		patharr2 = PathArray.new(@indir2)
+		patharr1 = PathArray.new(@args.indir1)
+		patharr2 = PathArray.new(@args.indir2)
 		
 		diffdata = DiffData.new(patharr1, patharr2)
 		
-		filecopy = FileCopy.new(diffdata.update_path_array, @outdir)
+		filecopy = FileCopy.new(diffdata.update_path_array, @args.outdir)
 		filecopy.run
 	end
+end
+
+# ------------------------------------------------------------
+# コマンドライン引数クラス
+# ------------------------------------------------------------
+class Arguments
+	attr_reader :indir1, :indir2, :outdir
 	
-	def parse_args
+	def initialize(argv)
+		@argv = argv
+	end
+	
+	def parse
 		@indir1 = @argv[0]
 		@indir2 = @argv[1]
 		@outdir = @argv[2]
+	end
+	
+	def valid?
+		@indir1 && @indir2 && @outdir
+	end
+	
+	def print_usage
+		puts "Usage: diffcopy 入力ディレクトリ1 入力ディレクトリ2 出力ディレクトリ"
 	end
 end
 
@@ -46,6 +69,7 @@ class PathArray < Array
 	def initialize(dir, array = nil)
 		@dir = dir
 		if array == nil
+			# 与えられたディレクトリ配下の、ファイル/ディレクトリを再帰的に取得する。
 			Dir.chdir(dir) {
 				concat(Dir.glob("**/*"))
 			}
@@ -98,7 +122,7 @@ class DiffData
 end
 
 # ------------------------------------------------------------
-# ファイル/ディレクトリ差分クラス
+# ファイル/ディレクトリ差分コピークラス
 # ------------------------------------------------------------
 class FileCopy
 	def initialize(path_array, out_dir)

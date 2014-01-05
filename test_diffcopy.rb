@@ -163,6 +163,18 @@ class TestDiffData < TestBase
 end
 
 class TestDiffCopy < TestBase
+	def test_args
+		# 準備
+		sut = DiffCopy.new([])
+		
+		# テスト実行
+		sut.run
+		
+		# 検証
+		# ※例外が発生しなければOK
+		pass
+	end
+	
 	# ファイル/フォルダなしの場合
 	def test_zero
 		# 準備
