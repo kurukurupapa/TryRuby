@@ -6,9 +6,7 @@
 # http://takuya-1st.hatenablog.jp/entry/20100921/1285054620
 
 require 'fileutils'
-require 'minitest/unit'
 require 'pathname'
-require 'pp'
 
 # ------------------------------------------------------------
 # DiffCopyコマンドクラス
@@ -56,7 +54,7 @@ class Arguments
 	end
 	
 	def print_usage
-		puts "Usage: diffcopy 入力ディレクトリ1 入力ディレクトリ2 出力ディレクトリ"
+		puts "Usage: diffcopy 変更前ディレクトリ 変更後ディレクトリ 出力ディレクトリ"
 	end
 end
 
